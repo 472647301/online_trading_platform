@@ -2,8 +2,8 @@
 // parameters and string queries, refer to api for more information
 class IEXCloud {
   constructor() {
-    // this.prefix = "https://cloud.iexapis.com/v1";
-    this.prefix = "https://sandbox.iexapis.com/v1"; // for testing
+    this.prefix = "https://cloud.iexapis.com/v1";
+    // this.prefix = "https://sandbox.iexapis.com/v1"; // for testing
     this.token = `?token=${process.env.REACT_APP_iexToken}`;
   }
 

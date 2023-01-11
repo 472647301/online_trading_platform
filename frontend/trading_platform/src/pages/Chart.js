@@ -1,5 +1,5 @@
 import React from "react";
-import SetChart from "../components/graphs/SetChart";
+import TradingView from "../components/tradingview";
 import Grid from "@material-ui/core/Grid";
 import { connect } from "react-redux";
 import Paper from "@material-ui/core/Paper";
@@ -28,7 +28,7 @@ class Chart extends React.Component {
               style={{ padding: 10, position: "relative", zIndex: 1 }}
             >
               <Grid item xs={12}>
-                <SetChart height={window.innerHeight - 250} />
+                <TradingView height={window.innerHeight - 250} />
               </Grid>
             </Grid>
           </Paper>

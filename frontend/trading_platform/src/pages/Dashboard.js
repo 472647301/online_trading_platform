@@ -1,6 +1,6 @@
 import React from "react";
 import Title from "../components/companyInfo/Title";
-import SetChart from "../components/graphs/SetChart";
+import TradingView from "../components/tradingview";
 import FinancialStatements from "../components/companyInfo/FinancialStatements";
 import Grid from "@material-ui/core/Grid";
 import { connect } from "react-redux";
@@ -31,7 +31,7 @@ class Dashboard extends React.Component {
               style={{ padding: 10, position: "relative", zIndex: 1 }}
             >
               <Grid item xs={12}>
-                <SetChart height={chartHeight} />
+                <TradingView height={chartHeight} />
               </Grid>
               <Grid item md={6}>
                 <FinancialStatements type="Advanced Stats" height={statsHeight} />

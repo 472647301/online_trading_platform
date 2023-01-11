@@ -1,7 +1,7 @@
 // https://iextrading.com/developer/docs/
 class IEX {
   constructor() {
-    this.prefix = "https://api.iextrading.com/1.0";
+    this.prefix = "https://cloud.iexapis.com/beta";
   }
 
   getFullUrl(
@@ -24,7 +24,7 @@ class IEX {
               IEX.getSuffixUrls(optionKey, ...parameter) +
               IEX.addSuffixUrls(optionKey2, parameter2);
       case "symbols":
-        return url;
+        return url+`?token=${process.env.REACT_APP_iexToken}`;
       default:
         return null;
     }

@@ -11,13 +11,13 @@ const styles = {
     padding: 10,
     width: "auto",
     height: "auto",
-    overflow: "auto"
+    overflow: "auto",
   },
   row: {
     textAlign: "center",
     paddingLeft: 10,
-    paddingRight: 10
-  }
+    paddingRight: 10,
+  },
 };
 
 class PortfolioHistory extends React.Component {
@@ -25,8 +25,8 @@ class PortfolioHistory extends React.Component {
     options: {
       dateStyle: "short",
       timeStyle: "short",
-      hour12: false
-    }
+      hour12: false,
+    },
   };
 
   componentDidMount() {
@@ -34,8 +34,11 @@ class PortfolioHistory extends React.Component {
   }
 
   render() {
-    const { tradeData, classes } = this.props;
+    const { tradeData, classes, quote } = this.props;
     const { options } = this.state;
+
+    console.log("---quote---", quote);
+
     return (
       <div style={{ height: this.props.height }}>
         {tradeData === undefined ? (
@@ -71,32 +74,52 @@ class PortfolioHistory extends React.Component {
               </tr>
             </thead>
             <tbody>
-              {tradeData.map(data => (
-                <tr key={data.id}>
-                  <td className={classes.row}>{data.symbol}</td>
-                  <td className={classes.row}>{data.company}</td>
-                  <td className={classes.row}>{data.transaction}</td>
-                  <td className={classes.row}>
-                    {currencyFormat(data.quantity, 0)}
-                  </td>
-                  <td className={classes.row}>
-                    {currencyFormat(data.price, 2)}
-                  </td>
-                  <td className={classes.row}>
-                    {currencyFormat(data.price * data.quantity, 2)}
-                  </td>
-                  <td className={classes.row}>
-                    {new Date(data.created_at).toLocaleString("en-US", options)}
-                  </td>
-                  <td className={classes.row}>
-                    <Button
-                      onClick={this.props.deleteTrade.bind(this, data.id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+              {tradeData.map((data) => {
+                let rate = "";
+                let color = "rgb(38, 166, 154)";
+                if (quote.close && data.price) {
+                  if (data.transaction === "BUY") {
+                    rate = currencyFormat(quote.close - data.price, 2);
+                  } else {
+                    rate = currencyFormat(data.price - quote.close, 2);
+                  }
+                }
+                if (rate && Number(rate) > 0) {
+                  color = "rgb(239, 83, 80)";
+                }
+                return (
+                  <tr key={data.id}>
+                    <td className={classes.row}>
+                      {data.symbol}
+                      <span style={{ color: color }}>({rate})</span>
+                    </td>
+                    <td className={classes.row}>{data.company}</td>
+                    <td className={classes.row}>{data.transaction}</td>
+                    <td className={classes.row}>
+                      {currencyFormat(data.quantity, 0)}
+                    </td>
+                    <td className={classes.row}>
+                      {currencyFormat(data.price, 2)}
+                    </td>
+                    <td className={classes.row}>
+                      {currencyFormat(data.price * data.quantity, 2)}
+                    </td>
+                    <td className={classes.row}>
+                      {new Date(data.created_at).toLocaleString(
+                        "en-US",
+                        options
+                      )}
+                    </td>
+                    <td className={classes.row}>
+                      <Button
+                        onClick={this.props.deleteTrade.bind(this, data.id)}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -105,15 +128,16 @@ class PortfolioHistory extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    tradeData: state.tradeReducer.tradeData
+    quote: state.iexReducer.quote,
+    tradeData: state.tradeReducer.tradeData,
   };
 };
 
 const mapDispatchToProps = {
   getTrades,
-  deleteTrade
+  deleteTrade,
 };
 
 export default connect(
