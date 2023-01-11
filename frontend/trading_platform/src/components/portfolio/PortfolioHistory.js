@@ -77,11 +77,11 @@ class PortfolioHistory extends React.Component {
               {tradeData.map((data) => {
                 let rate = "";
                 let color = "rgb(38, 166, 154)";
-                if (quote.close && data.price) {
+                if (quote.latestPrice && data.price) {
                   if (data.transaction === "BUY") {
-                    rate = currencyFormat(quote.close - data.price, 2);
+                    rate = currencyFormat(quote.latestPrice - data.price, 2);
                   } else {
-                    rate = currencyFormat(data.price - quote.close, 2);
+                    rate = currencyFormat(data.price - quote.latestPrice, 2);
                   }
                 }
                 if (rate && Number(rate) > 0) {

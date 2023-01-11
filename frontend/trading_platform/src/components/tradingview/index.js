@@ -18,7 +18,7 @@ function TradingView(props) {
   const datafeed = useRef();
   const interval = useRef("1D");
   const widget = useRef();
-  // const timer = useRef();
+  const loadend = useRef(false);
 
   const initDatafeed = (symbol) => {
     datafeed.current = new DataFeed({
@@ -55,40 +55,11 @@ function TradingView(props) {
     onError
   ) => {
     const bars = [];
-    // const size = window.innerWidth;
     if (!periodParams.firstDataRequest) {
       // 暂时不支持分段查询历史数据
       onResult(bars, { noData: true });
       return;
     }
-    // if (resolution !== interval.current) {
-    //   unsubscribeKLine();
-    //   interval.current = resolution as keyof typeof Resolution;
-    // }
-    // const res = await fetchKLine(
-    //   infoRef.current?.symbol!,
-    //   Resolution[interval.current].server,
-    //   size > 2000 ? 2000 : size
-    // );
-    // if (!res || !res.length) {
-    //   onResult(bars, { noData: true });
-    //   return;
-    // }
-    // for (let i = 0; i < res.length; i++) {
-    //   const item = res[i];
-    //   bars.push({
-    //     time: item.id * 1000,
-    //     open: item.open,
-    //     high: item.high,
-    //     low: item.low,
-    //     close: item.close,
-    //     volume: item.vol,
-    //   });
-    // }
-    // bars.sort((l, r) => (l.time > r.time ? 1 : -1));
-    // if (periodParams.firstDataRequest) {
-    //   subscribeKLine();
-    // }
     try {
       const res = await axios.get(
         iex.getFullUrl(
@@ -121,6 +92,7 @@ function TradingView(props) {
       }
       bars.sort((l, r) => (l.time > r.time ? 1 : -1));
       onResult(bars);
+      loadend.current = true;
     } catch (err) {
       onError(err.message);
     }
@@ -144,9 +116,22 @@ function TradingView(props) {
     if (!props.multi || !props.multi.length) {
       return;
     }
+    loadend.current = false;
     initDatafeed(props.multi[0].value);
     initTradingView(props.multi[0].value);
   }, [props.multi]);
+
+  useEffect(() => {
+    if (!loadend.current || !datafeed.current) return;
+    datafeed.current.updateBar({
+      time: props.quote.lastTradeTime,
+      open: props.quote.open,
+      high: props.quote.high,
+      low: props.quote.low,
+      close: props.quote.latestPrice,
+      volume: props.quote.volume,
+    });
+  }, [props.quote]);
 
   return (
     <div
@@ -159,6 +144,7 @@ function TradingView(props) {
 
 const mapStateToProps = (state) => {
   return {
+    quote: state.iexReducer.quote,
     multi: state.searchReducer.multi,
   };
 };
