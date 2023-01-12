@@ -109,7 +109,7 @@ function TradingView(props) {
 
   const initTradingView = (symbol) => {
     widget.current = new window.TradingView.widget({
-      locale: "zh",
+      locale: "en",
       fullscreen: true,
       theme: "Light",
       symbol: symbol,
