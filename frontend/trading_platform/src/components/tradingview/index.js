@@ -4,13 +4,19 @@ import { DataFeed } from "./datafeed";
 import IEXCloud from "../../iexAPI/iexCloud";
 import axios from "axios";
 import day from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+day.extend(utc);
+day.extend(timezone);
+day.tz.setDefault(Intl.DateTimeFormat().resolvedOptions().timeZone);
 
 const iex = new IEXCloud();
 
 const intervalMap = {
   "10": "5dm",
   "30": "1mm",
-  "1D": "1y",
+  "1D": "5y",
 };
 
 function TradingView(props) {
@@ -30,7 +36,7 @@ function TradingView(props) {
         session: "24x7",
         exchange: "",
         listed_exchange: "",
-        timezone: "Asia/Shanghai",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         format: "price",
         pricescale: Math.pow(10, 4),
         minmov: 1,
@@ -55,6 +61,9 @@ function TradingView(props) {
     onError
   ) => {
     const bars = [];
+    if (interval.current !== resolution) {
+      interval.current = resolution;
+    }
     if (!periodParams.firstDataRequest) {
       // 暂时不支持分段查询历史数据
       onResult(bars, { noData: true });
