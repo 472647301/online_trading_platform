@@ -66,12 +66,22 @@ export class DataFeed {
     //     onSymbolResolvedCallback(data); // 返回结构请参考LibrarySymbolInfo类型
     //   }
     // );
+    // return new Promise((resolve) => resolve(void 0)).then(() => {
+    //   if (this.options.SymbolInfo) {
+    //     onSymbolResolvedCallback(this.options.SymbolInfo);
+    //   } else {
+    //     onResolveErrorCallback("获取商品信息失败");
+    //   }
+    // });
+    if (this.options.resolveSymbol) {
+      return this.options.resolveSymbol(
+        symbolName,
+        onSymbolResolvedCallback,
+        onResolveErrorCallback
+      );
+    }
     return new Promise((resolve) => resolve(void 0)).then(() => {
-      if (this.options.SymbolInfo) {
-        onSymbolResolvedCallback(this.options.SymbolInfo);
-      } else {
-        onResolveErrorCallback("获取商品信息失败");
-      }
+      onResolveErrorCallback("获取商品信息失败");
     });
   }
 
