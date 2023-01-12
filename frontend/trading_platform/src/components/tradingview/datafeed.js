@@ -36,6 +36,14 @@ export class DataFeed {
     //     onResult(data); // 返回结构请参考SearchSymbolResultItem类型
     //   }
     // );
+    if (this.options.searchSymbols) {
+      return this.options.searchSymbols(
+        userInput,
+        exchange,
+        symbolType,
+        onResult
+      );
+    }
     return new Promise((resolve) => resolve(void 0)).then(() => {
       onResult([]);
     });
