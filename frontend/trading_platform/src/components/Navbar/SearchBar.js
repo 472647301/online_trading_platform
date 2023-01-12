@@ -228,7 +228,8 @@ class SearchBar extends React.Component {
     const selectStyles = {
       input: base => ({
         ...base,
-        color: theme.palette.text.primary,
+        height: 32,
+        color: '#666',
         "& input": {
           font: "inherit"
         }
