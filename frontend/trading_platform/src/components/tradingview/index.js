@@ -128,6 +128,12 @@ function TradingView(props) {
     loadend.current = false;
     initDatafeed(props.multi[0].value);
     initTradingView(props.multi[0].value);
+    return () => {
+      loadend.current = false;
+      interval.current = "1D";
+      datafeed.current = null;
+      widget.current = null;
+    };
   }, [props.multi]);
 
   useEffect(() => {
