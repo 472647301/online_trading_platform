@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import { DataFeed } from "./datafeed";
 import IEXCloud from "../../iexAPI/iexCloud";
 import axios from "axios";
-import day from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import dayjs from "dayjs";
+// import utc from "dayjs/plugin/utc";
+// import timezone from "dayjs/plugin/timezone";
 import { getSearchResult } from "../../redux/actions/searchAction";
 
-day.extend(utc);
-day.extend(timezone);
-day.tz.setDefault(Intl.DateTimeFormat().resolvedOptions().timeZone);
+// dayjs.extend(utc);
+// dayjs.extend(timezone);
+// dayjs.tz.setDefault("America/Toronto");
 
 const iex = new IEXCloud();
 
@@ -27,6 +27,7 @@ function TradingView(props) {
   const widget = useRef();
   const loadend = useRef(false);
   const symbols = useRef([]);
+  const lastTime = useRef();
 
   const initDatafeed = () => {
     datafeed.current = new DataFeed({
@@ -52,7 +53,7 @@ function TradingView(props) {
       session: "24x7",
       exchange: "",
       listed_exchange: "",
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: "America/Toronto",
       format: "price",
       pricescale: Math.pow(10, 4),
       minmov: 1,
@@ -119,9 +120,9 @@ function TradingView(props) {
         let time = 0;
         const item = res.data[i];
         if (item.minute) {
-          time = day(`${item.date} ${item.minute}:00`).valueOf();
+          time = dayjs(`${item.date} ${item.minute}:00`).valueOf();
         } else {
-          time = day(`${item.date} 00:00:00`).valueOf();
+          time = dayjs(`${item.date} 00:00:00`).valueOf();
         }
         bars.push({
           time: time,
@@ -135,6 +136,9 @@ function TradingView(props) {
       bars.sort((l, r) => (l.time > r.time ? 1 : -1));
       onResult(bars);
       loadend.current = true;
+      if (bars.length) {
+        lastTime.current = bars[bars.length - 1];
+      }
     } catch (err) {
       onError(err.message);
     }
@@ -151,6 +155,7 @@ function TradingView(props) {
       datafeed: datafeed.current,
       // library_path: "http://test.byronzhu.com/tv/charting_library/",
       library_path: "./charting_library/",
+      timezone: "America/Toronto",
     });
     widget.current.onChartReady(() => {
       // 现在可以调用其他widget的方法了
@@ -187,18 +192,19 @@ function TradingView(props) {
       interval.current = "1D";
       datafeed.current = null;
       widget.current = null;
+      lastTime.current = null;
     };
   }, [props.multi]);
 
   useEffect(() => {
-    if (!loadend.current || !datafeed.current) return;
+    if (!loadend.current || !datafeed.current || !lastTime.current) return;
     datafeed.current.updateBar({
-      time: props.quote.lastTradeTime,
-      open: props.quote.open,
-      high: props.quote.high,
-      low: props.quote.low,
+      time: lastTime.current.time,
+      open: lastTime.current.open,
+      high: lastTime.current.high,
+      low: lastTime.current.low,
       close: props.quote.latestPrice,
-      volume: props.quote.volume,
+      volume: lastTime.current.volume,
     });
   }, [props.quote]);
 
