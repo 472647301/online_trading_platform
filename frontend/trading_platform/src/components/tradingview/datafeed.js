@@ -4,11 +4,11 @@
  */
 
 export class DataFeed {
-  options;
-  subscribers = {};
+  options
+  subscribers = {}
 
   constructor(options) {
-    this.options = options;
+    this.options = options
   }
 
   /**
@@ -16,11 +16,11 @@ export class DataFeed {
    * @tips 图表初始化成功之后会回调这个函数,通过这个函数的callback参数传递DatafeedConfiguration配置给图表
    */
   async onReady(callback) {
-    return new Promise((resolve) => resolve(void 0)).then(() => {
+    return new Promise(resolve => resolve(void 0)).then(() => {
       if (this.options.DatafeedConfiguration) {
-        callback(this.options.DatafeedConfiguration);
+        callback(this.options.DatafeedConfiguration)
       }
-    });
+    })
   }
 
   /**
@@ -42,11 +42,11 @@ export class DataFeed {
         exchange,
         symbolType,
         onResult
-      );
+      )
     }
-    return new Promise((resolve) => resolve(void 0)).then(() => {
-      onResult([]);
-    });
+    return new Promise(resolve => resolve(void 0)).then(() => {
+      onResult([])
+    })
   }
 
   /**
@@ -78,11 +78,11 @@ export class DataFeed {
         symbolName,
         onSymbolResolvedCallback,
         onResolveErrorCallback
-      );
+      )
     }
-    return new Promise((resolve) => resolve(void 0)).then(() => {
-      onResolveErrorCallback("获取商品信息失败");
-    });
+    return new Promise(resolve => resolve(void 0)).then(() => {
+      onResolveErrorCallback('获取商品信息失败')
+    })
   }
 
   /**
@@ -91,9 +91,9 @@ export class DataFeed {
    */
   async getBars(symbolInfo, resolution, periodParams, onResult, onError) {
     if (!this.options.getBars) {
-      return new Promise((resolve) => resolve(void 0)).then(() => {
-        onResult([]);
-      });
+      return new Promise(resolve => resolve(void 0)).then(() => {
+        onResult([])
+      })
     }
     return this.options.getBars(
       symbolInfo,
@@ -101,7 +101,7 @@ export class DataFeed {
       periodParams,
       onResult,
       onError
-    );
+    )
   }
 
   /**
@@ -116,14 +116,14 @@ export class DataFeed {
     onResetCacheNeededCallback
   ) {
     if (this.subscribers[subscriberUID]) {
-      return;
+      return
     }
     this.subscribers[subscriberUID] = {
       lastBarTime: null,
       listener: onRealtimeCallback,
       resolution: resolution,
-      symbolInfo: symbolInfo,
-    };
+      symbolInfo: symbolInfo
+    }
   }
 
   /**
@@ -131,9 +131,9 @@ export class DataFeed {
    */
   unsubscribeBars(subscriberUID) {
     if (!this.subscribers[subscriberUID]) {
-      return;
+      return
     }
-    delete this.subscribers[subscriberUID];
+    delete this.subscribers[subscriberUID]
   }
 
   /**
@@ -142,16 +142,16 @@ export class DataFeed {
    */
   updateBar(bar) {
     for (const listenerGuid in this.subscribers) {
-      const subscriptionRecord = this.subscribers[listenerGuid];
+      const subscriptionRecord = this.subscribers[listenerGuid]
       if (
         subscriptionRecord.lastBarTime !== null &&
         bar.time < subscriptionRecord.lastBarTime
       ) {
         // 如果实时数据时间小于最后一根k线的时间则跳过更新
-        continue;
+        continue
       }
-      subscriptionRecord.lastBarTime = bar.time;
-      subscriptionRecord.listener(bar);
+      subscriptionRecord.lastBarTime = bar.time
+      subscriptionRecord.listener(bar)
     }
   }
 

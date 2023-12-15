@@ -1,94 +1,94 @@
-import React from "react";
-import { connect } from "react-redux";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import { fade } from "@material-ui/core/styles/colorManipulator";
-import { withStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
-import { getSymbols } from "../../redux/actions/iexAction";
-import { getSearchResult } from "../../redux/actions/searchAction";
-import classNames from "classnames";
-import AsyncSelect from "react-select/async";
-import NoSsr from "@material-ui/core/NoSsr";
-import TextField from "@material-ui/core/TextField";
-import Chip from "@material-ui/core/Chip";
-import CancelIcon from "@material-ui/icons/Cancel";
-import { emphasize } from "@material-ui/core/styles/colorManipulator";
+import React from 'react'
+import { connect } from 'react-redux'
+import Typography from '@material-ui/core/Typography'
+import MenuItem from '@material-ui/core/MenuItem'
+import { fade } from '@material-ui/core/styles/colorManipulator'
+import { withStyles } from '@material-ui/core/styles'
+import SearchIcon from '@material-ui/icons/Search'
+import { getSymbols } from '../../redux/actions/iexAction'
+import { getSearchResult } from '../../redux/actions/searchAction'
+import classNames from 'classnames'
+import AsyncSelect from 'react-select/async'
+import NoSsr from '@material-ui/core/NoSsr'
+import TextField from '@material-ui/core/TextField'
+import Chip from '@material-ui/core/Chip'
+import CancelIcon from '@material-ui/icons/Cancel'
+import { emphasize } from '@material-ui/core/styles/colorManipulator'
 
-const styles = (theme) => ({
+const styles = theme => ({
   search: {
-    position: "relative",
+    position: 'relative',
     zIndex: 2,
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25)
     },
     marginRight: theme.spacing.unit * 2,
     marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing.unit * 3,
-      width: "auto",
-    },
+      width: 'auto'
+    }
   },
   searchIcon: {
     width: theme.spacing.unit * 9,
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   innerRoot: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   input: {
-    display: "flex",
-    padding: 0,
+    display: 'flex',
+    padding: 0
   },
   valueContainer: {
-    display: "flex",
-    flexWrap: "wrap",
+    display: 'flex',
+    flexWrap: 'wrap',
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     paddingLeft: 75,
-    overflow: "hidden",
+    overflow: 'hidden'
   },
   chip: {
-    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`,
+    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`
   },
   chipFocused: {
     backgroundColor: emphasize(
-      theme.palette.type === "light"
+      theme.palette.type === 'light'
         ? theme.palette.grey[300]
         : theme.palette.grey[700],
       0.08
-    ),
+    )
   },
   noOptionsMessage: {
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`
   },
   singleValue: {
-    fontSize: 16,
+    fontSize: 16
   },
   placeholder: {
-    position: "absolute",
+    position: 'absolute',
     left: 75,
-    fontSize: 16,
+    fontSize: 16
   },
   paper: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 1,
     marginTop: theme.spacing.unit,
     left: 0,
-    right: 0,
+    right: 0
   },
   divider: {
-    height: theme.spacing.unit * 2,
-  },
-});
+    height: theme.spacing.unit * 2
+  }
+})
 
 function NoOptionsMessage(props) {
   return (
@@ -99,11 +99,11 @@ function NoOptionsMessage(props) {
     >
       {props.children}
     </Typography>
-  );
+  )
 }
 
 function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
+  return <div ref={inputRef} {...props} />
 }
 
 function Control(props) {
@@ -116,12 +116,12 @@ function Control(props) {
           className: props.selectProps.classes.input,
           inputRef: props.innerRef,
           children: props.children,
-          ...props.innerProps,
-        },
+          ...props.innerProps
+        }
       }}
       {...props.selectProps.textFieldProps}
     />
-  );
+  )
 }
 
 function Option(props) {
@@ -131,13 +131,13 @@ function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400,
+        fontWeight: props.isSelected ? 500 : 400
       }}
       {...props.innerProps}
     >
       {props.children}
     </MenuItem>
-  );
+  )
 }
 
 function Placeholder(props) {
@@ -149,7 +149,7 @@ function Placeholder(props) {
     >
       {props.children}
     </Typography>
-  );
+  )
 }
 
 function ValueContainer(props) {
@@ -157,7 +157,7 @@ function ValueContainer(props) {
     <div className={props.selectProps.classes.valueContainer}>
       {props.children}
     </div>
-  );
+  )
 }
 
 function MultiValue(props) {
@@ -166,12 +166,12 @@ function MultiValue(props) {
       tabIndex={-1}
       label={props.children}
       className={classNames(props.selectProps.classes.chip, {
-        [props.selectProps.classes.chipFocused]: props.isFocused,
+        [props.selectProps.classes.chipFocused]: props.isFocused
       })}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
     />
-  );
+  )
 }
 
 const components = {
@@ -180,63 +180,63 @@ const components = {
   NoOptionsMessage,
   Option,
   Placeholder,
-  ValueContainer,
-};
+  ValueContainer
+}
 
 class SearchBar extends React.Component {
   state = {
-    multi: null,
-  };
+    multi: null
+  }
 
   componentDidMount() {
-    this.props.getSymbols();
+    this.props.getSymbols()
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.multi !== prevState.multi) {
-      this.props.getSearchResult(this.state.multi);
+      this.props.getSearchResult(this.state.multi)
     }
   }
 
-  handleSearchChange = (name) => (value) => {
-    this.setState({ [name]: value });
-  };
+  handleSearchChange = name => value => {
+    this.setState({ [name]: value })
+  }
 
-  filterSymbols = (searchSym) => {
-    let symbols = this.props.symbols.map((data) => ({
+  filterSymbols = searchSym => {
+    let symbols = this.props.symbols.map(data => ({
       label: data.symbol,
       value: data.symbol,
-      name: data.name,
-    }));
-    return symbols.filter((i) =>
+      name: data.name
+    }))
+    return symbols.filter(i =>
       i.label.toUpperCase().includes(searchSym.toUpperCase())
-    );
-  };
+    )
+  }
 
-  promiseOptions = (searchSym) => {
-    return new Promise((resolve) => {
+  promiseOptions = searchSym => {
+    return new Promise(resolve => {
       setTimeout(() => {
-        resolve(this.filterSymbols(searchSym));
-      }, 1000);
-    });
-  };
+        resolve(this.filterSymbols(searchSym))
+      }, 1000)
+    })
+  }
 
   render() {
-    const { multi } = this.state;
-    let { classes, theme } = this.props;
+    const { multi } = this.state
+    let { classes } = this.props
 
     const selectStyles = {
-      input: (base) => ({
+      input: base => ({
         ...base,
         height: 32,
-        color: "#666",
-        "& input": {
-          font: "inherit",
-          color: "#fff !important",
-          lineHeight: 32,
-        },
-      }),
-    };
+        color: '#666',
+        '& input': {
+          font: 'inherit',
+          color: '#fff !important',
+          lineHeight: 32
+        }
+      })
+    }
 
     return (
       <div className={classes.innerRoot}>
@@ -250,38 +250,38 @@ class SearchBar extends React.Component {
               styles={selectStyles}
               textFieldProps={{
                 InputLabelProps: {
-                  shrink: true,
-                },
+                  shrink: true
+                }
               }}
               loadOptions={this.promiseOptions}
               components={components}
               value={multi}
-              onChange={this.handleSearchChange("multi")}
+              onChange={this.handleSearchChange('multi')}
               placeholder="Search Stock Symbol..."
               isMulti
             />
           </NoSsr>
         </div>
       </div>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     multi: state.searchReducer.multi,
-    symbols: state.iexReducer.symbols,
-  };
-};
+    symbols: state.iexReducer.symbols
+  }
+}
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    getSearchResult: (result) => dispatch(getSearchResult(result)),
-    getSymbols: () => dispatch(getSymbols()),
-  };
-};
+    getSearchResult: result => dispatch(getSearchResult(result)),
+    getSymbols: () => dispatch(getSymbols())
+  }
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles, { withTheme: true })(SearchBar));
+)(withStyles(styles, { withTheme: true })(SearchBar))
